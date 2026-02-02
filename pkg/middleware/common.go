@@ -2,11 +2,12 @@ package middleware
 
 import "net/http"
 
-type WraperWrite struct {
+type WraperWriter struct {
 	http.ResponseWriter
 	StatusCode int
 }
 
-func (w *WraperWrite) WriteHeader(statusCode int) {
+func (w *WraperWriter) WriteHeader(statusCode int) {
 	w.WriteHeader(statusCode)
+	w.StatusCode = statusCode
 }

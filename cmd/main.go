@@ -26,9 +26,16 @@ func main() {
 		LinkRepository: linkRepository,
 	})
 
+	//Midlewairs
+	stack := middleware.Chain(
+		middleware.Cors,
+		middleware.Logging,
+		middleware.IsAuthed,
+	)
+
 	server := http.Server{
-		Handler: middleware.Logging(router),
 		Addr:    ":8081",
+		Handler: stack(router),
 	}
 
 	fmt.Println("Server is listening on 8081 port")
