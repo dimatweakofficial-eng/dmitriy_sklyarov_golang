@@ -5,6 +5,7 @@ import (
 	"demo-1/intern/auth"
 	"demo-1/intern/link"
 	"demo-1/pkg/db"
+	"demo-1/pkg/middleware"
 	"fmt"
 	"net/http"
 )
@@ -17,7 +18,7 @@ func main() {
 	//Repositoris
 	linkRepository := link.NewLinkRepository(db)
 
-	//Handler
+	//Handlers
 	auth.NewAuthHandler(router, auth.AuthHandlerWithDeps{
 		Config: config,
 	})
@@ -26,10 +27,10 @@ func main() {
 	})
 
 	server := http.Server{
-		Handler: router,
+		Handler: middleware.Logging(router),
 		Addr:    ":8081",
 	}
 
-	fmt.Println("Server is listening on 5432 port")
+	fmt.Println("Server is listening on 8081 port")
 	server.ListenAndServe()
 }
