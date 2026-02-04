@@ -8,6 +8,6 @@ type WraperWriter struct {
 }
 
 func (w *WraperWriter) WriteHeader(statusCode int) {
-	w.WriteHeader(statusCode)
+	w.ResponseWriter.WriteHeader(statusCode)
 	w.StatusCode = statusCode
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"demo-1/intern/link"
+	"demo-1/intern/user"
 	"os"
 
 	"github.com/joho/godotenv" // Заменяем импорт
@@ -18,5 +19,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	db.AutoMigrate(&link.Link{})
+	db.AutoMigrate(&link.Link{}, &user.UserModel{})
 }

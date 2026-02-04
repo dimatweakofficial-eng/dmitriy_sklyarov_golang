@@ -4,6 +4,7 @@ import (
 	"demo-1/configs"
 	"demo-1/intern/auth"
 	"demo-1/intern/link"
+	"demo-1/intern/user"
 	"demo-1/pkg/db"
 	"demo-1/pkg/middleware"
 	"fmt"
@@ -17,10 +18,15 @@ func main() {
 
 	//Repositoris
 	linkRepository := link.NewLinkRepository(db)
+	userRepository := user.NewUserRepository(db)
+
+	//Services
+	authService := auth.NewAuthService(userRepository)
 
 	//Handlers
 	auth.NewAuthHandler(router, auth.AuthHandlerWithDeps{
-		Config: config,
+		Config:      config,
+		AuthServise: authService,
 	})
 	link.NewLinkHandler(router, link.LinkHandlerWithDeps{
 		LinkRepository: linkRepository,
@@ -30,7 +36,6 @@ func main() {
 	stack := middleware.Chain(
 		middleware.Cors,
 		middleware.Logging,
-		middleware.IsAuthed,
 	)
 
 	server := http.Server{
