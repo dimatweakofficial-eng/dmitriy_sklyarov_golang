@@ -12,32 +12,35 @@ import (
 )
 
 func main() {
+	//подключение к основным сущностям с которыми будет вестись работа
 	config := configs.LoadConfig()
 	db := db.NewDb(config)
 	router := http.NewServeMux()
 
-	//Repositoris
+	//Repositoris (действия с бд)
 	linkRepository := link.NewLinkRepository(db)
 	userRepository := user.NewUserRepository(db)
 
-	//Services
-	authService := auth.NewAuthService(userRepository)
+	//Services (бизнес логика пришедших запросов после получения дто)
+	authServise := auth.NewAuthService(userRepository)
 
-	//Handlers
+	//Handlers (обработчики принимающие все необходимые зависимости для дальнеших вз)
 	auth.NewAuthHandler(router, auth.AuthHandlerWithDeps{
 		Config:      config,
-		AuthServise: authService,
+		AuthServise: authServise,
 	})
 	link.NewLinkHandler(router, link.LinkHandlerWithDeps{
+		Config:         config,
 		LinkRepository: linkRepository,
 	})
 
-	//Midlewairs
+	//Midlewairs (cтэк промежуточных обработчиков)
 	stack := middleware.Chain(
 		middleware.Cors,
 		middleware.Logging,
 	)
 
+	//сервер где каждый запрос проходит stack middleware
 	server := http.Server{
 		Addr:    ":8081",
 		Handler: stack(router),
