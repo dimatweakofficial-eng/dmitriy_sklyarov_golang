@@ -2,7 +2,7 @@ package stat
 
 import (
 	"demo-1/configs"
-	"fmt"
+	"demo-1/pkg/res"
 	"net/http"
 	"time"
 )
@@ -44,6 +44,7 @@ func (handler *StatHandler) GetStat() http.HandlerFunc {
 		if by != GroupByDay && by != GroupByMonth {
 			http.Error(w, "Invalid by param", http.StatusBadRequest)
 		}
-		fmt.Println(from, to, by)
+		stat := handler.Repo.GetStats(from, to, by)
+		res.Json(w, stat, 200)
 	}
 }
