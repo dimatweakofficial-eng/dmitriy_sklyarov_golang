@@ -2,6 +2,7 @@ package link
 
 import (
 	"demo-1/configs"
+	"demo-1/pkg/event"
 	"demo-1/pkg/handle"
 	"demo-1/pkg/middleware"
 	"demo-1/pkg/res"
@@ -14,16 +15,19 @@ import (
 
 type LinkHandler struct {
 	LinkRepository *LinkRepository
+	EventBus       *event.EventBus
 }
 
 type LinkHandlerWithDeps struct {
 	LinkRepository *LinkRepository
+	EventBus       *event.EventBus
 	Config         *configs.Config
 }
 
 func NewLinkHandler(router *http.ServeMux, deps LinkHandlerWithDeps) {
 	handler := LinkHandler{
 		LinkRepository: deps.LinkRepository,
+		EventBus:       deps.EventBus,
 	}
 	//указываем в адрес изменяемый id, который выташем и в методе будем работать с нужной ссылкой
 	router.HandleFunc("POST /link", handler.Create())
@@ -125,6 +129,11 @@ func (handler *LinkHandler) GoTo() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return
 		}
+
+		go handler.EventBus.Publish(event.Event{
+			Type: event.EventLinkVisited,
+			Data: link.ID,
+		})
 		http.Redirect(w, r, link.Url, http.StatusTemporaryRedirect)
 	}
 }

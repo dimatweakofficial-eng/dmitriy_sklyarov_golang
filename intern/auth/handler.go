@@ -69,7 +69,7 @@ func (handler *AuthHandler) Register() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
-		//генерим jwt для защищенных роутов, проверки авторизации и доступа к своим ссылкам (емаил аккаунта совпадает значит и токен совпадет с тем что при регестрации)
+		//генерим jwt для защищенных роутов c линком, проверка авторизации,  доступа к своим ссылкам (емаил аккаунта совпадает значит и токен совпадет с тем что при регестрации)
 		token, err := jwt.NewJwt(handler.Config.Token.TokenName).Create(jwt.JwtData{
 			Email: email,
 		})

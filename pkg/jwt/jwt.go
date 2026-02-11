@@ -37,7 +37,7 @@ func (j *JWT) Parse(token string) (bool, *JwtData) {
 	if err != nil {
 		return false, nil
 	}
-	//достаем клэимс по ключу
+	//достаем значение по ключу
 	email := t.Claims.(jwt.MapClaims)["email"]
 	return t.Valid, &JwtData{
 		Email: email.(string),
