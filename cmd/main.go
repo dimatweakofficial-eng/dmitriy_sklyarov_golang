@@ -23,7 +23,6 @@ func main() {
 	//Repositoris (действия с бд)
 	linkRepository := link.NewLinkRepository(db)
 	userRepository := user.NewUserRepository(db)
-	eventBus = event.NewEventBus()
 	statRepository := stat.NewStatRepository(db)
 
 	//Services (бизнес логика пришедших запросов после получения дто)
